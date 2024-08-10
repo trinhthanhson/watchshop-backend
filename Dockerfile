@@ -1,23 +1,11 @@
-# Build stage
-FROM maven:3.8.6-openjdk-8 AS build
-WORKDIR /app
+FROM maven:3.9.2-eclipse-temurin-17-alpine as builder
 
-# Copy only the pom.xml and dependencies first to leverage Docker cache
-COPY pom.xml .
-COPY src ./src
+COPY ./src src/
+COPY ./pom.xml pom.xml
 
-# Run Maven to build the application
 RUN mvn clean package -DskipTests
 
-# Package stage
-FROM openjdk:8
-WORKDIR /app
-
-# Copy the JAR file from the build stage
-COPY --from=build /app/target/watchshop-api.jar /app/watchshop-api.jar
-
-# Expose the port that the application will run on
-EXPOSE 8084
-
-# Define the command to run the application
-ENTRYPOINT ["java", "-jar", "/app/watchshop-api.jar"]
+FROM eclipse-temurin:17-jre-alpine
+COPY --from=builder target/*.jar app.jar
+EXPOSE 8080
+CMD ["java","-jar","app.jar"]
