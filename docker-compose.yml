@@ -1,0 +1,35 @@
+version: '3'
+services:
+  mysql-watchshop-container:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=watchshop
+    volumes:
+      - /data/mysql
+    ports:
+      - "3307:3306"
+ 
+  springboot-watchshop-container:
+    image: thanhson25072002/watchshop:0.0.1
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql-watchshop-container
+    volumes:
+      - /data/watchshop-api
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-watchshop-container:3306/watchshop?useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL5InnoDBDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_GENERATE_DDL: "true"
+      SERVER_PORT: 8084
+volumes:
+  db_data:
