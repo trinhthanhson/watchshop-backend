@@ -57,7 +57,8 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000", // React
                 "http://localhost:5173",
-                "https://wachshop-react.onrender.com"
+                "https://wachshop-react.onrender.com",
+                "https://wachshop-react.vercel.app"
         ));
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
