@@ -4,7 +4,6 @@ package ptithcm.tttn.controller.staff;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ptithcm.tttn.entity.Customer;
 import ptithcm.tttn.entity.Staff;
 import ptithcm.tttn.entity.User;
 import ptithcm.tttn.response.ApiResponse;
@@ -34,7 +33,7 @@ public class StaffUserController {
             List<User> findAll = userService.findAll();
             List<User> allUserCustomer = new ArrayList<>();
             for(User u : findAll){
-                if(u.getRole().getRole_name().equals("CUSTOMER")){
+                if(u.getRole_user().getRole_name().equals("CUSTOMER")){
                     allUserCustomer.add(u);
                 }
             }

@@ -13,10 +13,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import ptithcm.tttn.service.impl.UserDetailsServiceImpl;
+
+import javax.servlet.http.HttpServletResponse;
 
 
 @Configuration
@@ -32,18 +35,36 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // Allow sessions for OAuth2
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
-                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/user/**").permitAll()
-                .antMatchers("/api/staff/**").hasAnyAuthority("STAFF","MANAGER","SHIPPER")
-                .antMatchers("/api/manager/**").hasAnyAuthority("MANAGER","STAFF")
+                .authorizeRequests()
+                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/user/**").permitAll()  // Require authentication
+                .antMatchers("/api/staff/**").hasAnyAuthority("STAFF", "MANAGER", "SHIPPER")
+                .antMatchers("/api/manager/**").hasAnyAuthority("MANAGER", "STAFF")
                 .and()
+                .oauth2Login(oauth2login -> {
+                    oauth2login
+                            .loginPage("/login")
+                            .successHandler((request, response, authentication) -> {
+                                // Log or handle authentication success
+                                OAuth2AuthenticationToken auth = (OAuth2AuthenticationToken) authentication;
+                                if (auth != null) {
+                                    System.out.println("Authenticated user: " + auth.getPrincipal().getAttributes());
+                                    response.sendRedirect("/user");
+                                } else {
+                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+                                }
+                            });
+                })
                 .addFilterBefore(new JwtTokenValidator(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()
                 .cors().configurationSource(corsConfigurationSource())
-                .and().httpBasic()
-                .and().formLogin();
+                .and()
+                .httpBasic()
+                .and()
+                .formLogin();  // Optional: Allows form-based login if needed
     }
 
     @Override

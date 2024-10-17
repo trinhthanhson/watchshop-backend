@@ -11,14 +11,12 @@ import ptithcm.tttn.service.StaffService;
 import ptithcm.tttn.service.UserService;
 
 import javax.transaction.Transactional;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CouponServiceImpl implements CouponService {
-
+public class CouponServiceImpl  implements CouponService {
     private final UserService userService;
     private final StaffService staffService;
     private final CouponRepo couponRepo;
@@ -32,6 +30,17 @@ public class CouponServiceImpl implements CouponService {
         this.productService = productService;
         this.couponDetailRepo = couponDetailRepo;
     }
+
+    @Override
+    public List<Coupon> findAll() throws Exception {
+        List<Coupon> find = couponRepo.findAll();
+        if(!find.isEmpty()){
+            return find;
+        }
+        throw new Exception("Coupon is empty");
+    }
+
+
 
     @Override
     @Transactional
@@ -52,7 +61,7 @@ public class CouponServiceImpl implements CouponService {
             List<Product> allProduct = productService.findAll();
             for (Product p : allProduct) {
                 if (p.getStatus().equals("Active")) {
-                    CouponDetail couponDetail = new CouponDetail();
+                    Coupon_detail couponDetail = new Coupon_detail();
                     couponDetail.setCoupon_id(saved.getCoupon_id());
                     couponDetail.setStatus("Active");
                     couponDetail.setPercent(coupon.getPercent()/100);
@@ -62,11 +71,6 @@ public class CouponServiceImpl implements CouponService {
             }
         }
         return saved;
-    }
-
-    @Override
-    public List<Coupon> findAll() {
-        return couponRepo.findAll();
     }
 
     @Override
@@ -100,7 +104,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponDetail> findAllDetailByCouponId(Long coupon_id) {
+    public List<Coupon_detail> findAllDetailByCouponId(Long coupon_id) {
         return couponDetailRepo.findAllByCouponId(coupon_id);
     }
 }

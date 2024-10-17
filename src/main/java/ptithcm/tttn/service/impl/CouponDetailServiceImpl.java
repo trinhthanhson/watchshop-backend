@@ -1,15 +1,14 @@
 package ptithcm.tttn.service.impl;
 
 import org.springframework.stereotype.Service;
-import ptithcm.tttn.entity.CouponDetail;
+import ptithcm.tttn.entity.Coupon_detail;
 import ptithcm.tttn.repository.CouponDetailRepo;
 import ptithcm.tttn.service.CouponDetailService;
 
 import java.util.Optional;
 
 @Service
-public class CouponDetailServiceImpl implements CouponDetailService
-{
+public class CouponDetailServiceImpl implements CouponDetailService {
     private  final CouponDetailRepo couponDetailRepo;
 
     public CouponDetailServiceImpl(CouponDetailRepo couponDetailRepo) {
@@ -17,10 +16,10 @@ public class CouponDetailServiceImpl implements CouponDetailService
     }
 
     @Override
-    public CouponDetail updateStatusDetail(CouponDetail detail, Long coupon_detail_id) throws Exception {
-        CouponDetail find = findById(coupon_detail_id);
+    public Coupon_detail updateStatusDetail(Coupon_detail detail, Long coupon_detail_id) throws Exception {
+        Coupon_detail find = findById(coupon_detail_id);
         if(detail.getStatus().equals("Active")){
-        find.setStatus("Inactive");
+            find.setStatus("Inactive");
         }else{
             find.setStatus("Active");
         }
@@ -28,8 +27,8 @@ public class CouponDetailServiceImpl implements CouponDetailService
     }
 
     @Override
-    public CouponDetail findById(Long id) throws Exception {
-        Optional<CouponDetail> find = couponDetailRepo.findById(id);
+    public Coupon_detail findById(Long id) throws Exception {
+        Optional<Coupon_detail> find = couponDetailRepo.findById(id);
         if(find.isPresent()){
             return find.get();
         }

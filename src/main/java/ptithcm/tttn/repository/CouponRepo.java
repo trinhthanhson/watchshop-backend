@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ptithcm.tttn.entity.Coupon;
 
 @Repository
-public interface CouponRepo extends JpaRepository<Coupon, Long> {
+public interface CouponRepo extends JpaRepository<Coupon,Long> {
 }

@@ -1,10 +1,10 @@
 package ptithcm.tttn.controller.staff;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ptithcm.tttn.entity.Customer;
-import ptithcm.tttn.entity.User;
 import ptithcm.tttn.response.EntityResponse;
 import ptithcm.tttn.response.ListEntityResponse;
 import ptithcm.tttn.service.CustomerService;

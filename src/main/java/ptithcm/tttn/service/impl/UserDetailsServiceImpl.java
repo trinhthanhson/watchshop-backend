@@ -1,8 +1,8 @@
 package ptithcm.tttn.service.impl;
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,20 +10,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import ptithcm.tttn.entity.Role;
 import ptithcm.tttn.entity.User;
+import ptithcm.tttn.repository.RoleRepo;
 import ptithcm.tttn.repository.UserRepo;
-import ptithcm.tttn.service.RoleService;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserRepo userRepository;
-    private RoleService roleService;
+    private RoleRepo roleRepo;
 
-    public UserDetailsServiceImpl(UserRepo userRepository, RoleService roleService) {
+    public UserDetailsServiceImpl(UserRepo userRepository, RoleRepo roleRepo) {
         this.userRepository = userRepository;
-        this.roleService = roleService;
+        this.roleRepo = roleRepo;
     }
 
     @Override
@@ -34,7 +35,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         String roleName = "";
         try {
-            Role role = roleService.findById(user.getRole_id());
+            Optional<Role> findRole = roleRepo.findById(user.getRole_id());
+            Role role = findRole.get();
             roleName = role.getRole_name();
         } catch (Exception e) {
             e.printStackTrace();

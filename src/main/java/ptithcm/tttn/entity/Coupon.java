@@ -1,10 +1,9 @@
 package ptithcm.tttn.entity;
 
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -26,16 +25,19 @@ public class Coupon {
     private Date end_date;
 
     @Column
+    private LocalDateTime created_at;
+
+    @Column
+    private LocalDateTime updated_at;
+
+    @Column
+    private String status;
+
+    @Column
     private String content;
 
     @Column
     private String title;
-
-    @Column
-    private LocalDateTime created_at;
-
-    @Column
-    private  LocalDateTime updated_at;
 
     @Column
     private Long created_by;
@@ -43,15 +45,15 @@ public class Coupon {
     @Column
     private Long updated_by;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by",insertable = false, updatable = false)
-    private Staff created_coupon;
+    @OneToMany(mappedBy = "coupon_detail")
+    private List<Coupon_detail> couponDetails;
 
     @ManyToOne
-    @JoinColumn(name = "updated_by",insertable = false, updatable = false)
-    private Staff updated_coupon;
+    @JoinColumn(name = "created_by", insertable = false, updatable = false)
+    private Staff staff_create;
 
-    @OneToMany(mappedBy = "coupon")
-    private List<CouponDetail> couponDetails;
+    @ManyToOne
+    @JoinColumn(name = "updated_by", insertable = false, updatable = false)
+    private Staff staff_update;
 
 }

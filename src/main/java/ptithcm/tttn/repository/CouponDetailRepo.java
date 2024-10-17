@@ -5,20 +5,18 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ptithcm.tttn.entity.CouponDetail;
+import ptithcm.tttn.entity.Coupon_detail;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface CouponDetailRepo extends JpaRepository<CouponDetail, Long> {
-
-
+public interface CouponDetailRepo extends JpaRepository<Coupon_detail,Long> {
     @Modifying
     @Transactional
-    @Query("DELETE FROM CouponDetail cd WHERE cd.coupon_id = :coupon_id")
+    @Query(value = "DELETE FROM coupon_detail WHERE coupon_id = ?1",nativeQuery = true)
     void deleteByCouponId(Long coupon_id);
 
-    @Query("SELECT cd FROM CouponDetail cd WHERE cd.coupon.id = :couponId")
-    List<CouponDetail> findAllByCouponId(@Param("couponId") Long couponId);
+    @Query(value = "SELECT * FROM coupon_detail WHERE coupon_id = ?1",nativeQuery = true)
+    List<Coupon_detail> findAllByCouponId(Long couponId);
 }

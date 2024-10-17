@@ -1,19 +1,13 @@
 package ptithcm.tttn.entity;
 
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Data
 @Entity
-@Getter
-@Setter
 @Table(name = "role")
 public class Role {
 
@@ -28,7 +22,7 @@ public class Role {
     @Column
     private LocalDateTime created_at;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role_user")
     @JsonIgnore
-    List<User> users;
+    private List<User> Users;
 }

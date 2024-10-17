@@ -1,17 +1,17 @@
 package ptithcm.tttn.entity;
 
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "review")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Review {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -44,12 +44,13 @@ public class Review {
     @OneToOne
     @JsonIgnore
     @JoinColumn(name = "order_detail_id",insertable = false, updatable = false)
-    private OrderDetail order_detail;
+    private Order_detail order_detail;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "product_id",insertable = false, updatable = false)
-    private Product product;
+    private Product product_review;
+
 
     @ManyToOne
     @JoinColumn(name = "created_by",insertable = false, updatable = false)
@@ -59,4 +60,5 @@ public class Review {
     @JsonIgnore
     @JoinColumn(name = "updated_by",insertable = false, updatable = false)
     private Customer review_update;
+
 }

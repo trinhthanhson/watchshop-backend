@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ptithcm.tttn.entity.Bill;
 
 @Repository
-public interface BillRepo extends JpaRepository<Bill, Long> {
+public interface BillRepo extends JpaRepository<Bill,Long> {
 }

@@ -35,7 +35,6 @@ public class JwtTokenProvider {
     // }
     public String generateAccessToken(Authentication auth) {
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-        String authoritiesString = populateAuthorities(authorities);
 
         String jwt = Jwts.builder()
                 .setIssuedAt(new Date())
@@ -82,20 +81,6 @@ public class JwtTokenProvider {
 
     // 	return jwt;
     // }
-    public String generateRefreshToken(Authentication auth) {
-        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-        String authoritiesString = populateAuthorities(authorities);
-
-        String jwt = Jwts.builder()
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + 259200000))
-                .claim("username", auth.getName())
-                .claim("authorities",populateAuthorities(auth.getAuthorities()))
-                .signWith(key)
-                .compact();
-
-        return jwt;
-    }
 
     public String getUsernameFromJwtToken(String jwt) {
         jwt = jwt.substring(7);
@@ -113,5 +98,6 @@ public class JwtTokenProvider {
         }
         return String.join(",",auths);
     }
+
 
 }

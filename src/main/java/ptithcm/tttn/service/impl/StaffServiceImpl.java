@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 @Service
 public class StaffServiceImpl implements StaffService {
-
     private final StaffRepo staffRepo;
     private final UserService userService;
 
@@ -27,9 +26,9 @@ public class StaffServiceImpl implements StaffService {
         try{
             return staffRepo.findByUserId(user_id);
         }
-       catch (Exception e){
-           throw new SQLException("Error finding staff by user ID: " + user_id, e);
-       }
+        catch (Exception e){
+            throw new SQLException("Error finding staff by user ID: " + user_id, e);
+        }
     }
 
 
@@ -56,7 +55,6 @@ public class StaffServiceImpl implements StaffService {
         find.setGender(staff.getGender());
         find.setFirst_name(staff.getFirst_name());
         find.setLast_name(staff.getLast_name());
-        find.setAddress(staff.getAddress());
         return staffRepo.save(find);
     }
 }

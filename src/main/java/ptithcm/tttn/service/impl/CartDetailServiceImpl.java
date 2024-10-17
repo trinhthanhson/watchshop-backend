@@ -1,61 +1,46 @@
 package ptithcm.tttn.service.impl;
 
 import org.springframework.stereotype.Service;
-import ptithcm.tttn.entity.Cart;
-import ptithcm.tttn.entity.CartDetail;
+import ptithcm.tttn.entity.Cart_detail;
 import ptithcm.tttn.entity.Customer;
 import ptithcm.tttn.entity.User;
 import ptithcm.tttn.repository.CartDetailRepo;
 import ptithcm.tttn.service.CartDetailService;
-import ptithcm.tttn.service.CartService;
 import ptithcm.tttn.service.CustomerService;
 import ptithcm.tttn.service.UserService;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CartDetailServiceImpl implements CartDetailService {
 
+    private final CartDetailRepo cartDetailRepo;
     private final UserService userService;
     private final CustomerService customerService;
-    private final CartService cartService;
-    private final CartDetailRepo cartDetailRepo;
 
-    public CartDetailServiceImpl(UserService userService, CustomerService customerService, CartService cartService, CartDetailRepo cartDetailRepo) {
+    public CartDetailServiceImpl(CartDetailRepo cartDetailRepo, UserService userService, CustomerService customerService) {
+        this.cartDetailRepo = cartDetailRepo;
         this.userService = userService;
         this.customerService = customerService;
-        this.cartService = cartService;
-        this.cartDetailRepo = cartDetailRepo;
     }
 
     @Override
     @Transactional
-    public void updateQuantity(String jwt, CartDetail cartDetail) throws Exception {
-       Cart cart = cartService.findCartByJwtCustomer(jwt);
-       if(cart != null){
-           cartDetailRepo.updateQuantity(cart.getCart_id(),cartDetail.getProduct_id(),cartDetail.getQuantity());
-           cartService.autoUpdateCart(cart.getCart_id());
-       }else{
-           throw new Exception("not found cart");
-       }
+    public Cart_detail createCart(Cart_detail cartDetail, String jwt) throws Exception {
+        User find = userService.findUserByJwt(jwt);
+        Customer customer = customerService.findByUserId(find.getUser_id());
+        Cart_detail create = new Cart_detail();
+        create.setCustomer_id(customer.getCustomer_id());
+        create.setQuantity(cartDetail.getQuantity());
+        create.setProduct_id(cartDetail.getProduct_id());
+        return  cartDetailRepo.save(create);
     }
 
     @Override
-    public void deleteItemCartDetail(String jwt,CartDetail cartDetail) throws Exception {
-        Cart cart = cartService.findCartByJwtCustomer(jwt);
-        if(cart != null){
-            cartDetailRepo.deleteItemCartDetail(cartDetail.getProduct_id(),cart.getCart_id());
-        }else{
-            throw new Exception("Can not delete item in cart ");
-        }
-
-    }
-
-    @Override
-    @Transactional
-    public void deleteCartDetail(Long cart_id) {
-        cartDetailRepo.deleteCartDetail(cart_id);
+    public List<Cart_detail> findCartByJwt(String jwt) throws Exception {
+        User user = userService.findUserByJwt(jwt);
+        Customer customer = customerService.findByUserId(user.getUser_id());
+        return cartDetailRepo.findAllByCustomerId(customer.getCustomer_id());
     }
 }

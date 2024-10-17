@@ -22,21 +22,20 @@ public class CouponController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ListEntityResponse> allCoupon(){
-        ListEntityResponse res = new ListEntityResponse<>();
-        try{
+    public ResponseEntity<ListEntityResponse<Coupon>> allCoupon() {
+        ListEntityResponse<Coupon> res = new ListEntityResponse<>();
+        try {
             List<Coupon> allCoupon = couponService.findAll();
             res.setData(allCoupon);
             res.setMessage("Success");
             res.setStatus(HttpStatus.OK);
             res.setCode(HttpStatus.OK.value());
-        }catch (Exception e){
+        } catch (Exception e) {
             res.setData(null);
             res.setMessage("error " + e.getMessage());
             res.setStatus(HttpStatus.CONFLICT);
             res.setCode(HttpStatus.CONFLICT.value());
         }
-        return new ResponseEntity<>(res,res.getStatus());
-
+        return new ResponseEntity<>(res, res.getStatus());
     }
 }

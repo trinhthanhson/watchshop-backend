@@ -4,21 +4,20 @@ import ptithcm.tttn.entity.Product;
 import ptithcm.tttn.request.ProductRequest;
 import ptithcm.tttn.request.ProductSaleRequest;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface ProductService {
     List<Product> findAll();
 
-    Product findByName(String name) throws Exception;
-
     Product findById(String id) throws Exception;
 
     List<Product> findByDetail(String desc);
 
-    List<Product> findByCategoryId(Long id);
+    Product findByName(String name) throws Exception;
 
-    List<Product> findByBrandId(Long id);
+    List<Product> findByCategoryId(Long id) throws Exception;
+
+    List<Product> findByBrandId(Long id) throws Exception;
 
     Product createProduct(ProductRequest product, String jwt) throws Exception;
 

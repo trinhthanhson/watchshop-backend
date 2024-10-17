@@ -1,8 +1,12 @@
 package ptithcm.tttn.controller.user;
 
+import com.google.api.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ptithcm.tttn.entity.Category;
 import ptithcm.tttn.response.EntityResponse;
 import ptithcm.tttn.response.ListEntityResponse;
@@ -20,36 +24,38 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ListEntityResponse> findAllCategory(){
-        ListEntityResponse res = new ListEntityResponse();
-        HttpStatus httpStatus = HttpStatus.CONFLICT;
+    public ResponseEntity<ListEntityResponse<Category>> getAllCategory(){
+        ListEntityResponse<Category> res = new ListEntityResponse<>();
         try{
-
-            List<Category> categoryList = categoryService.findAll();
-            res.setData(categoryList);
-            res.setMessage("Success");
-            res.setStatus(HttpStatus.OK);
+            List<Category> allCategory = categoryService.findAll();
+            res.setData(allCategory);
             res.setCode(HttpStatus.OK.value());
-            httpStatus = HttpStatus.OK;
-        }catch (Exception e){
-            res.setStatus(HttpStatus.CONFLICT);
-            res.setCode(HttpStatus.CONFLICT.value());
-            res.setMessage("erorr " + e.getMessage());
+            res.setStatus(HttpStatus.OK);
+            res.setMessage("Success");
+        }catch (Exception e) {
             res.setData(null);
+            res.setCode(HttpStatus.CONFLICT.value());
+            res.setStatus(HttpStatus.CONFLICT);
+            res.setMessage("Error: " +e.getMessage());
         }
-        return new ResponseEntity<>(res,httpStatus);
+        return new ResponseEntity<>(res,res.getStatus());
     }
 
-    @GetMapping("/find")
-    public ResponseEntity<EntityResponse> findCategoryByName(@RequestParam String name) throws Exception {
-        EntityResponse res = new EntityResponse();
-        Category category = categoryService.findCategoryByName(name);
-        HttpStatus httpStatus = HttpStatus.CONFLICT;
-        res.setData(category);
-        res.setMessage("Success");
-        res.setStatus(HttpStatus.CREATED);
-        res.setCode(HttpStatus.CREATED.value());
-        httpStatus = HttpStatus.CREATED;
-        return new ResponseEntity<>(res,httpStatus);
+    @GetMapping("/{id}/find")
+    public ResponseEntity<EntityResponse<Category>> getCategoryById(@PathVariable Long id){
+        EntityResponse<Category> res = new EntityResponse<>();
+        try{
+            Category category = categoryService.findById(id);
+            res.setCode(HttpStatus.OK.value());
+            res.setMessage("Success");
+            res.setData(category);
+            res.setStatus(HttpStatus.OK);
+        }catch (Exception e){
+            res.setCode(HttpStatus.CONFLICT.value());
+            res.setMessage("Error: " + e.getMessage());
+            res.setData(null);
+            res.setStatus(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(res,res.getStatus());
     }
 }

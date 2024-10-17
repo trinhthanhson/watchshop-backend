@@ -7,26 +7,25 @@ import ptithcm.tttn.entity.Orders;
 import ptithcm.tttn.response.EntityResponse;
 import ptithcm.tttn.response.ListEntityResponse;
 import ptithcm.tttn.response.ValueResponse;
-import ptithcm.tttn.service.OrdersService;
+import ptithcm.tttn.service.OrderService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/staff/order")
 public class StaffOrderController {
 
-    private final OrdersService ordersService;
+    private final OrderService orderService;
 
-    public StaffOrderController(OrdersService ordersService) {
-        this.ordersService = ordersService;
+    public StaffOrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @GetMapping("/all")
     public ResponseEntity<ListEntityResponse> getAllOrderByStaff(@RequestHeader("Authorization") String jwt){
         ListEntityResponse res = new ListEntityResponse<>();
         try{
-            List<Orders> getAllOrder = ordersService.findAll();
+            List<Orders> getAllOrder = orderService.findAll();
             res.setData(getAllOrder);
             res.setStatus(HttpStatus.OK);
             res.setCode(HttpStatus.OK.value());
@@ -43,7 +42,7 @@ public class StaffOrderController {
     public ResponseEntity<EntityResponse> cancelOrderByCustomer(@RequestHeader("Authorization") String jwt, @PathVariable Long id, @RequestBody Orders od){
         EntityResponse res = new EntityResponse<>();
         try{
-            Orders orders = ordersService.updateStatusOrderByStaff(od.getStatus(),id,jwt);
+            Orders orders = orderService.updateStatusOrderByStaff(od.getStatus(),id,jwt);
             res.setData(orders);
             res.setMessage("success");
             res.setCode(HttpStatus.OK.value());
@@ -61,7 +60,7 @@ public class StaffOrderController {
     public ResponseEntity<ValueResponse> getValueOrder(@RequestHeader("Authorization") String jwt){
         ValueResponse res = new ValueResponse();
         try{
-            List<Orders> getAllOrder = ordersService.findAll();
+            List<Orders> getAllOrder = orderService.findAll();
             Integer total = 0;
             for(Orders od : getAllOrder){
                 total+=od.getTotal_price();
@@ -84,7 +83,7 @@ public class StaffOrderController {
     public ResponseEntity<ListEntityResponse> getAllOrderByStaffShipper(@RequestHeader("Authorization") String jwt){
         ListEntityResponse res = new ListEntityResponse<>();
         try{
-            List<Orders> getAllOrder = ordersService.allOrderReceiveByStaff(jwt);
+            List<Orders> getAllOrder = orderService.allOrderReceiveByStaff(jwt);
 
             res.setData(getAllOrder);
             res.setStatus(HttpStatus.OK);
@@ -98,5 +97,4 @@ public class StaffOrderController {
         }
         return new ResponseEntity<>(res,res.getStatus());
     }
-
 }

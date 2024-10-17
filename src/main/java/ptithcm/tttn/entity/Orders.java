@@ -1,14 +1,10 @@
 package ptithcm.tttn.entity;
 
-
-import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Data
 @Entity
 @Table(name = "orders")
@@ -20,7 +16,10 @@ public class Orders {
     private Long order_id;
 
     @Column
-     private String recipient_name;
+    private String recipient_name;
+
+    @Column
+    private String recipient_phone;
 
     @Column
     private int total_quantity;
@@ -30,9 +29,6 @@ public class Orders {
 
     @Column
     private String address;
-
-    @Column
-    private String recipient_phone;
 
     @Column
     private String note;
@@ -47,34 +43,30 @@ public class Orders {
     private LocalDateTime updated_at;
 
     @Column
-    private Long created_by;
+    private Long staff_id;
+
+    @Column Long updated_by;
 
     @Column
-    private Long updated_by;
+    private Long customer_id;
 
-    @Column
-    private Long updated_staff;
-
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "order_bill")
     private Bill bill;
 
     @ManyToOne
-    @JoinColumn(name = "created_by",insertable = false, updatable = false)
-    private Customer customer_created;
+    @JoinColumn(name = "staff_id",insertable = false,updatable = false)
+    private Staff staff_order;
 
     @ManyToOne
-    @JoinColumn(name = "updated_staff",insertable = false, updatable = false)
-    @JsonIgnore
-    private Staff staff_updated;
+    @JoinColumn(name = "updated_by", insertable = false, updatable = false)
+    private Staff staff_update;
 
     @ManyToOne
-    @JoinColumn(name = "updated_by",insertable = false, updatable = false)
-    @JsonIgnore
-    private Customer customer_updated;
+    @JoinColumn(name = "customer_id",insertable = false,updatable = false)
+    private Customer customer_order;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderDetail> orderDetails;
-
+    @OneToMany(mappedBy = "orders")
+    private List<Order_detail> orderDetails;
 
 
 }

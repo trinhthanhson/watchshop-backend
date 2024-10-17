@@ -8,6 +8,7 @@ import ptithcm.tttn.response.EntityResponse;
 import ptithcm.tttn.response.ListEntityResponse;
 import ptithcm.tttn.service.ProductService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -20,76 +21,58 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/{id}/info")
-    public ResponseEntity<EntityResponse> getInfoProduct(@PathVariable String id){
-        EntityResponse res = new EntityResponse();
-        try{
-            Product product = productService.findById(id);
-            res.setCode(HttpStatus.OK.value());
+    @GetMapping("/all")
+    public ResponseEntity<ListEntityResponse<Product>> findAllProduct() {
+
+        ListEntityResponse<Product> res = new ListEntityResponse<>();
+        try {
+            List<Product> allProduct = productService.findAll();
             res.setMessage("Success");
             res.setStatus(HttpStatus.OK);
-            res.setData(product);
-        }catch (Exception e){
             res.setCode(HttpStatus.OK.value());
-            res.setMessage("Fail " + e.getMessage());
+            res.setData(allProduct);
+        } catch (Exception e) {
+            res.setMessage("Error: " + e.getMessage());
+            res.setCode(HttpStatus.CONFLICT.value());
             res.setStatus(HttpStatus.CONFLICT);
             res.setData(null);
         }
-        return new ResponseEntity<>(res,res.getStatus());
+        return new ResponseEntity<>(res, res.getStatus());
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<ListEntityResponse> getAllProduct(){
-        ListEntityResponse res = new ListEntityResponse();
-        try{
-            List<Product> product = productService.findAll();
-            res.setCode(HttpStatus.OK.value());
+    @GetMapping("/{id}/info")
+    public ResponseEntity<EntityResponse> findProductById(@PathVariable String id) {
+        EntityResponse res = new EntityResponse();
+        try {
+            Product findById = productService.findById(id);
             res.setMessage("Success");
+            res.setData(findById);
             res.setStatus(HttpStatus.OK);
-            res.setData(product);
-        }catch (Exception e){
             res.setCode(HttpStatus.OK.value());
-            res.setMessage("Fail " + e.getMessage());
-            res.setStatus(HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            res.setMessage("Error: " + e.getMessage());
             res.setData(null);
-        }
-        return new ResponseEntity<>(res,res.getStatus());
-    }
-    @GetMapping("/{id}/category")
-    public ResponseEntity<ListEntityResponse> getInfoProductByCategory(@PathVariable Long id){
-        ListEntityResponse res = new ListEntityResponse();
-        try{
-            List<Product> product = productService.findByCategoryId(id);
-            res.setCode(HttpStatus.OK.value());
-            res.setMessage("Success");
-            res.setStatus(HttpStatus.OK);
-            res.setData(product);
-        }catch (Exception e){
-            res.setCode(HttpStatus.OK.value());
-            res.setMessage("Fail " + e.getMessage());
             res.setStatus(HttpStatus.CONFLICT);
-            res.setData(null);
+            res.setCode(HttpStatus.CONFLICT.value());
         }
-        return new ResponseEntity<>(res,res.getStatus());
+        return new ResponseEntity<>(res, res.getStatus());
     }
 
     @GetMapping("/find")
-    public ResponseEntity<ListEntityResponse> getAllProductByDetail(@RequestParam String keyword){
+    public ResponseEntity<ListEntityResponse> getAllProductByDetail(@RequestParam String keyword) {
         ListEntityResponse res = new ListEntityResponse();
-        try{
+        try {
             List<Product> find = productService.findByDetail(keyword);
             res.setCode(HttpStatus.OK.value());
             res.setMessage("Success");
             res.setStatus(HttpStatus.OK);
             res.setData(find);
-        }catch (Exception e){
+        } catch (Exception e) {
             res.setCode(HttpStatus.CONFLICT.value());
             res.setMessage("error " + e.getMessage());
             res.setStatus(HttpStatus.CONFLICT);
             res.setData(null);
         }
-        return new ResponseEntity<>(res,res.getStatus());
-
+        return new ResponseEntity<>(res, res.getStatus());
     }
-
 }

@@ -1,18 +1,15 @@
 package ptithcm.tttn.entity;
 
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Data
 @Entity
 @Table(name = "brand")
 public class Brand {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -36,15 +33,15 @@ public class Brand {
     @Column
     private Long updated_by;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "brand_product")
+    private List<Product> products;
+
     @ManyToOne
     @JoinColumn(name = "created_by",insertable = false, updatable = false)
-    private Staff created_brand;
+    private Staff staff_create;
 
     @ManyToOne
     @JoinColumn(name = "updated_by",insertable = false, updatable = false)
-    private Staff updated_brand;
-
-    @OneToMany(mappedBy = "brand")
-    @JsonIgnore
-    private List<Product> product;
+    private Staff staff_update;
 }

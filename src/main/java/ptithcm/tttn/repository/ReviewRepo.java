@@ -8,8 +8,7 @@ import ptithcm.tttn.entity.Review;
 import java.util.List;
 
 @Repository
-public interface ReviewRepo extends JpaRepository<Review, Long> {
-
+public interface  ReviewRepo extends JpaRepository<Review,Long> {
     @Query(value = "SELECT * FROM review WHERE created_by = ?1  ", nativeQuery = true)
     List<Review> findAllReviewByCustomer(Long customer_id);
 

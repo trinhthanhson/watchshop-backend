@@ -1,19 +1,15 @@
 package ptithcm.tttn.entity;
 
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-
 @Data
 @Entity
 @Table(name = "customer")
 public class Customer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -29,10 +25,7 @@ public class Customer {
     private String last_name;
 
     @Column
-    private Date birthday;
-
-    @Column
-    private String address;
+    private LocalDateTime birthday;
 
     @Column
     private String gender;
@@ -55,28 +48,24 @@ public class Customer {
     @Column
     private Long user_id;
 
-    @OneToMany(mappedBy = "customer_created")
-    @JsonIgnore
-    private List<Orders> order_created;
+    @OneToOne
+    @JoinColumn(name = "user_id",insertable = false,updatable = false)
+    private User user_customer;
 
-    @OneToMany(mappedBy = "customer_updated")
+    @OneToMany(mappedBy = "customer_order")
     @JsonIgnore
-    private List<Orders> order_updated;
+    private List<Orders> orders;
+
+    @OneToMany(mappedBy = "customer_cart")
+    @JsonIgnore
+    private List<Cart_detail> cartDetails;
 
     @OneToMany(mappedBy = "review_created")
     @JsonIgnore
-    private List<Review> review_created;
+    private List<Review> reviews_created;
 
     @OneToMany(mappedBy = "review_update")
     @JsonIgnore
-    private List<Review> review_update;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id",insertable = false, updatable = false)
-    private User user;
-
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Cart cart;
-
+    private List<Review> reviews_updated;
 
 }

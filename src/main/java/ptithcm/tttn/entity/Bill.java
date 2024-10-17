@@ -1,11 +1,9 @@
 package ptithcm.tttn.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
 @Data
 @Entity
 @Table(name = "bill")
@@ -20,19 +18,18 @@ public class Bill {
     private LocalDateTime created_at;
 
     @Column
-    private Long order_id;
+    private Long staff_id;
 
     @Column
-    private Long created_by;
+    private Long order_id;
 
-    @OneToOne
-    @JsonIgnore
-    @JoinColumn(name = "order_id",insertable = false, updatable = false)
-    private Orders order;
 
     @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "created_by" ,insertable = false, updatable = false)
-    private Staff staff_created;
+    @JoinColumn(name = "staff_id",insertable = false,updatable = false)
+    private Staff staff_bill;
+
+    @OneToOne
+    @JoinColumn(name = "order_id",insertable = false,updatable = false)
+    private Orders order_bill;
 
 }

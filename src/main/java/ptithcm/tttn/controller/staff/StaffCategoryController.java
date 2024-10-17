@@ -6,12 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ptithcm.tttn.entity.Category;
 import ptithcm.tttn.response.ApiResponse;
 import ptithcm.tttn.response.EntityResponse;
-import ptithcm.tttn.response.ListEntityResponse;
 import ptithcm.tttn.service.CategoryService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/staff/category")
@@ -24,8 +19,8 @@ public class StaffCategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<EntityResponse> addCategoriesByStaff(@RequestBody Category category, @RequestHeader("Authorization") String jwt) {
-        EntityResponse res = new EntityResponse();
+    public ResponseEntity<EntityResponse<Category>> addCategoriesByStaff(@RequestBody Category category, @RequestHeader("Authorization") String jwt) {
+        EntityResponse<Category> res = new EntityResponse<>();
         HttpStatus httpStatus = HttpStatus.CONFLICT;
 
         try {
@@ -37,6 +32,9 @@ public class StaffCategoryController {
 //                    throw new Exception("Please enter complete information for all categories");
 //                }
 //            }
+            if (category.getCategory_name().isEmpty()) {
+                throw new Exception("Please enter complete information");
+            }
             Category saveCategory = categoryService.createCategory(category.getCategory_name(),jwt);
             res.setData(saveCategory);
             res.setMessage("Success");
@@ -58,7 +56,7 @@ public class StaffCategoryController {
     public ResponseEntity<ApiResponse> updatedCategoryByStaff(@RequestBody Category category, @RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception{
         ApiResponse res = new ApiResponse();
         try{
-            if(category.getCategory_name().equals("")){
+            if (category.getCategory_name().isEmpty()) {
                 throw new Exception("Please enter complete information");
             }
             Category saveCategory = categoryService.updateCategory(id,category.getCategory_name(),jwt);
@@ -77,7 +75,7 @@ public class StaffCategoryController {
     public ResponseEntity<ApiResponse> deleteCategoryByStaff(@RequestHeader("Authorization") String jwt, @PathVariable Long id) throws Exception{
         ApiResponse res = new ApiResponse();
         try{
-            
+
             Category saveCategory = categoryService.deleteCategory(id,jwt);
             res.setMessage("Success");
             res.setStatus(HttpStatus.OK);
@@ -89,5 +87,4 @@ public class StaffCategoryController {
         }
         return new ResponseEntity<>(res,res.getStatus());
     }
-
 }

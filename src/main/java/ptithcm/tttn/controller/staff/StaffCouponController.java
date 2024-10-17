@@ -1,12 +1,11 @@
 package ptithcm.tttn.controller.staff;
 
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ptithcm.tttn.entity.Coupon;
-import ptithcm.tttn.entity.CouponDetail;
+import ptithcm.tttn.entity.Coupon_detail;
 import ptithcm.tttn.request.CouponRequest;
 import ptithcm.tttn.response.ApiResponse;
 import ptithcm.tttn.response.EntityResponse;
@@ -92,7 +91,7 @@ public class StaffCouponController {
     public ResponseEntity<ListEntityResponse> getAllCouponDetailByStaff(@RequestHeader("Authorization") String jwt,@PathVariable Long id){
         ListEntityResponse res = new ListEntityResponse();
         try{
-            List<CouponDetail> allCoupon = couponService.findAllDetailByCouponId(id);
+            List<Coupon_detail> allCoupon = couponService.findAllDetailByCouponId(id);
             res.setData(allCoupon);
             res.setCode(HttpStatus.OK.value());
             res.setStatus(HttpStatus.OK);
@@ -107,10 +106,10 @@ public class StaffCouponController {
     }
 
     @PutMapping("/{id}/delete")
-    public ResponseEntity<ApiResponse> updateStatusCouponDetail(@RequestHeader("Authorization") String jwt,@PathVariable Long id, @RequestBody CouponDetail detail){
+    public ResponseEntity<ApiResponse> updateStatusCouponDetail(@RequestHeader("Authorization") String jwt,@PathVariable Long id, @RequestBody Coupon_detail detail){
         ApiResponse res = new ApiResponse();
         try {
-            CouponDetail couponDetail = couponDetailService.updateStatusDetail(detail, id);
+            Coupon_detail couponDetail = couponDetailService.updateStatusDetail(detail, id);
             res.setStatus(HttpStatus.OK);
             res.setMessage("success");
             res.setCode(HttpStatus.OK.value());

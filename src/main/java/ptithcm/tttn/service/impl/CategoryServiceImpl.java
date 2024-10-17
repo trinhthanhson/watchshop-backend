@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CategoryServiceImpl implements CategoryService
-{
+public class CategoryServiceImpl implements CategoryService {
     private final UserService userService;
     private final StaffRepo staffRepo;
     private final CategoryRepo categoryRepo;
@@ -25,6 +24,33 @@ public class CategoryServiceImpl implements CategoryService
         this.userService = userService;
         this.staffRepo = staffRepo;
         this.categoryRepo = categoryRepo;
+    }
+
+    @Override
+    public List<Category> findAll() throws Exception {
+        List<Category> all = categoryRepo.findAll();
+        if (all != null) {
+            return all;
+        }
+        throw new Exception("Category is empty");
+    }
+
+    @Override
+    public Category findById(Long id) throws Exception {
+        Optional<Category> find = categoryRepo.findById(id);
+        if (find.isPresent()) {
+            return find.get();
+        }
+        throw new Exception("Not found category by id " + id);
+    }
+
+    @Override
+    public Category findByName(String name) throws Exception {
+        Category category = categoryRepo.findCategoryByName(name);
+        if (category != null) {
+            return category;
+        }
+        throw new Exception("Not found category by name " + name);
     }
 
     @Override
@@ -59,49 +85,26 @@ public class CategoryServiceImpl implements CategoryService
     }
 
     @Override
-    public List<Category> findAll() {
-        return categoryRepo.findAll();
-    }
-
-    @Override
     @Transactional
     public Category updateCategory(Long id, String category_name, String jwt) throws Exception {
         Category find = findById(id);
         boolean checkExist = checkExitsCategory(category_name);
         Category save = new Category();
         if(!checkExist){
-        try{
-            User user = userService.findUserByJwt(jwt);
-            Staff staff = staffRepo.findByUserId(user.getUser_id());
-            find.setCategory_name(category_name);
-            find.setUpdated_by(staff.getStaff_id());
-            find.setUpdated_at(LocalDateTime.now());
-            save = categoryRepo.save(find);
-        }catch (Exception e){
-            throw new Exception("error " + e.getMessage());
-        }
+            try{
+                User user = userService.findUserByJwt(jwt);
+                Staff staff = staffRepo.findByUserId(user.getUser_id());
+                find.setCategory_name(category_name);
+                find.setUpdated_by(staff.getStaff_id());
+                find.setUpdated_at(LocalDateTime.now());
+                save = categoryRepo.save(find);
+            }catch (Exception e){
+                throw new Exception("error " + e.getMessage());
+            }
         }else{
             throw new Exception("exist category by name " + category_name);
         }
         return save;
-    }
-
-    @Override
-    public Category findById(Long id) throws Exception {
-        Optional<Category> find = categoryRepo.findById(id);
-        if(find.isPresent()){
-            return find.get();
-        }
-        throw new Exception("not found category by id " + id);
-    }
-
-    @Override
-    public Category findCategoryByName(String name) throws Exception {
-        Category category = categoryRepo.findCategoryByName(name);
-        if(category != null){
-            return category;
-        }
-        throw new Exception("not found category by name " + name);
     }
 
     @Override

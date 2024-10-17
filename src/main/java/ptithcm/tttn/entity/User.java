@@ -3,19 +3,13 @@ package ptithcm.tttn.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
 
-@Getter
-@Setter
+import javax.persistence.*;
+import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "user")
-public class User{
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,52 +23,51 @@ public class User{
     private String password;
 
     @Column
-    private  String status;
+    private String status;
 
     @Column
-    private float points;
+    private String access_token;
+
+    @Column
+    private String expired_token;
 
     @Column
     private LocalDateTime created_at;
 
     @Column
-    private  LocalDateTime updated_at;
+    private LocalDateTime updated_at;
+
+    @Column
+    private LocalDateTime expired_date;
+
+    @Column
+    private float points;
 
     @Column
     private Long role_id;
 
     @Column
-    private  String accessToken;
-
-    @Column
-    private  String refreshToken;
-
-    @Column
-    private Timestamp expiredAccessToken;
-
-    @Column
-    private  Timestamp expiredRefresh;
-
-    @Column
     private Long updated_by;
-
 
     @ManyToOne
     @JoinColumn(name = "role_id",insertable = false, updatable = false)
-    private Role role;
+    private Role role_user;
 
-    @OneToMany(mappedBy = "user")
+    @OneToOne(mappedBy = "user_customer")
     @JsonIgnore
-    private List<Staff> staffs;
+    private Customer customer;
+
+    @OneToOne(mappedBy = "user_staff")
+    @JsonIgnore
+    private Staff staff;
 
     @ManyToOne
     @JoinColumn(name = "updated_by",insertable = false, updatable = false)
     @JsonIgnore
-    private Staff update_staff;
+    private Staff staff_update;
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Customer> customers;
+
+
 
 
 }

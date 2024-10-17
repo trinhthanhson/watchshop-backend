@@ -1,11 +1,12 @@
 package ptithcm.tttn.service;
 
-import ptithcm.tttn.entity.CartDetail;
+import ptithcm.tttn.entity.Cart_detail;
 
 import java.util.List;
 
 public interface CartDetailService {
-        void updateQuantity(String jwt,CartDetail cartDetail) throws Exception;
-        void deleteItemCartDetail(String jwt,CartDetail cartDetail) throws Exception;
-        void deleteCartDetail(Long cart_id);
+
+    Cart_detail createCart(Cart_detail cartDetail, String jwt) throws Exception;
+
+    List<Cart_detail> findCartByJwt(String jwt) throws Exception;
 }
